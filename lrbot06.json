@@ -1,0 +1,104 @@
+{
+    # do you want to place all private data like keys or passwords
+    # in a seperate file
+    "use_secrets": 1,
+    # location of this file if in use
+    "file_secrets": "lrbot.secrets.js",
+
+    # minimum daily volume for coins to trade
+    # checked with a hysteresis of +/- 5%
+    "volume_min": "200",
+    # minimum price for coins to trade
+    # checked with a hysteresis of +/- 5%
+    "price_min": "0.00000100",
+    # TODO: set your start balance - neccessary for the first calculations!
+    "startbalance_usdt": "1000",
+    # dustlimit
+    "dustlimit_usdt": "10.00",
+
+    # send trades to exchange?
+    # "trademode": "real" (buy and sell on the exchange with real money)
+    # "trademode": "paper" (no real trades)
+    "trademode": "paper",
+    # equity protocol in csv file
+    "equity_csv": "lr_equity.csv",
+
+    "telegram":
+        {
+            # do you want messages on telegram? 1: yes, 0: no
+            "use_telegram": 1,
+            # which name to use for messages
+            "name_telegram": "LRBot Test",
+            # copy values from PT's APPLICATON.properties
+            "telegram.botToken": "secrets_telegram.botToken",
+            "telegram.chatId": "secrets_telegram.chatId"
+        },
+
+    # definitions for the strategy linreg
+    "linreg":
+        {
+            # which candle size to use?
+            # (default: "2h")
+            "candle_length": "15m",
+            # check prices and trade every xx hours
+            # (default: "24")
+            "check_every": "4h",
+            # dummy for usdt balance, gets updated while running
+            "balance_usdt": "0.0",
+            # parameter for linear regression
+            "maxcoins": "3",
+            "len_min": "60",
+            "len_max": "250",
+            "len_short": "8",
+            "trend_sell": "0.0",
+            "trend_buy": "0.30",
+            "trend_min_r2": "0.80",
+            "trend_short_min_r2": "0.50",
+            "difftrend": "0.20",
+
+            # parameters for stop loss
+            # check loss within these number of candles ...
+            "sl_candlecount": "8",
+            # ... for loss of max.
+            "sl_loss": "-10%"
+        },
+        
+    # settings for the exchange
+    "exchange":
+        {
+            # exchange the account belongs to
+            "exchange": "binance",
+            # market the signals should belong to
+            "market": "btc",
+            # your api key - don't share!
+            "apikey": "secrets_apikey",
+            # your api secret - don't share!
+            "apisecret": "secrets_apisecret",
+
+            # second source for fetching historical data
+            # "0": off, "1": on
+            "cryptocompare": "1",
+
+            # do you want to limit trading to only some coins? then set here
+            # ATTENTION: the whitelist of each USED market must be filled - otherwise each coin gets excluded for this market!
+            # use 'ALL' or each coin you want to use
+            "whitelist": "ALL",
+            # list here all hodl coins and any other coin you want to exclude from trading
+            "blacklist": "BNB",
+            
+            # max. allowed spread for buying or selling
+            "maxspread": "0.02",
+            # how much time to wait for order completion
+            "waittime": "10"
+        },
+
+    "debug":
+        {
+            "debug_lrbot": "1",
+            "debug_lrhelper": "1",
+            "debug_lrpairs": "0",
+            "debug_lrtelegram": "0",
+            "debug_lrexchange": "1",
+            "debug_lrstrat_linreg": "1"
+        }
+}

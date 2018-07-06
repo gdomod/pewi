@@ -1,0 +1,61 @@
+{
+    # parameters for the backtest
+    
+    # each comment starting with 'TODO:' marks
+    # value line(s)  the user may change for a test
+    # to suit the wishes
+
+    # TODO: period of time to test
+    "startdate": "01-04-2018",
+    "enddate": "01-06-2018",
+
+    # TODO: set the pairs you want to test
+    # this is a short test list to see the backtest work
+    "pairslist": "btc/usdt ada/btc eos/btc ven/btc eth/btc neo/btc bch/btc xmr/btc xrp/btc ltc/btc",
+    # list for binance
+    #"pairslist": "btc/usdt ada/btc eng/btc mco/btc trx/btc ae/btc eos/btc mith/btc tusd/btc agi/btc etc/btc nas/btc ven/btc arn/btc eth/btc neo/btc wan/btc bch/btc fun/btc npxs/btc waves/btc bcn/btc gas/btc omg/btc wtc/btc bnb/btc gnt/btc ont/btc xem/btc bqx/btc gto/btc powr/btc xlm/btc btg/btc hsr/btc ppt/btc xmr/btc btm/btc icx/btc qkc/btc xrb/btc bts/btc iost/btc qtum/btc xrp/btc dash/btc iot/btc rep/btc xvg/btc data/btc knc/btc salt/btc zec/btc dgd/btc link/btc sc/btc zil/btc doge/btc loom/btc snt/btc zrx/btc ela/btc lsk/btc strat/btc elf/btc ltc/btc theta/btc",
+    # list for poloniex
+    # "pairslist": "amp/btc emc2/btc nav/btc strat/btc ardr/btc etc/btc neos/btc sys/btc bch/btc eth/btc nmc/btc via/btc bcn/btc exp/btc nxt/btc vtc/btc bts/btc fct/btc omni/btc xem/btc burst/btc flo/btc pasc/btc xmr/btc clam/btc gas/btc pink/btc xpm/btc cvc/btc gno/btc pot/btc xrp/btc dash/btc gnt/btc rep/btc zec/btc dcr/btc lsk/btc sc/btc zrx/btc dgb/btc ltc/btc steem/btc btc/usdt doge/btc maid/btc str/btc",
+
+    # TODO: set your start balance for test
+    "startbalance_usdt": "1000",
+    # TODO: dustlimit
+    "dustlimit_usdt": "10.00",
+    
+    # strategy to test
+    "strategy": "linreg",
+
+    # definitions for the strategy linreg
+    "linreg":
+        {
+            # TODO: which candle size to use?
+            "candle_length": "1h",
+            # TODO: after this time intervall every call strategy
+            "check_every": "12h",
+            # TODO: parameter for linear regression
+            "maxcoins": "3",
+            "len_min": "24",
+            "len_max": "240",
+            "len_short": "9",
+            "trend_sell": "0.00",
+            "trend_buy": "0.35",
+            "trend_min_r2": "0.80",
+            "difftrend": "9.0",
+
+            # parameters for DROP CHECK
+            # TODO: check drop within these number of candles ...
+            "sl_candlecount": "4",
+            # TODO: ... for drop of max.
+            "sl_loss": "-12%"
+        },
+        
+    "debug":
+        {
+            "debug_lrbot": "0",
+            "debug_lrhelper": "0",
+            "debug_lrpairs": "0",
+            "debug_lrtelegram": "0",
+            "debug_lrexchange": "0",
+            "debug_lrstrat_linreg": "4"
+        }
+}

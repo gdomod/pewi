@@ -1,0 +1,131 @@
+LinRegBot
+=========
+
+
+Der LinRegBot ist ein Tradingbot für Binance und Poloniex.
+(Weitere Börsen sind geplant.)
+
+Im Gegensatz zu den meisten Bots verfolgt er einen anderen Tradingansatz.
+
+In Seitwärts- und Bullenmärkten wählt er unter den steigenden Coins die am
+zuverlässigsten und stärksten steigenden Coins. Diese kauft er sukzessive
+und hält sie solange, bis ihr Trend vorbei ist. Kleinere Korrekturen werden
+ausgesessen.
+
+In Bärenmärkten tauscht der Bot die Coins in USDT und schützt so die Balance.
+
+Diese Methodik hätte 2018 viele Verluste erspart.
+
+Die drei Kernelemente:
+
+- es werden nur Coins in Betracht gezogen, die "zuverlässig" steigen,
+  d.h. Rauschen wird ignoriert
+- unter diesen Coins wird selektiert, nur die "besten" der "guten" 
+  werden gekauft
+- Verlustzeiten werden durch den Wechsel in USDT entschärft
+
+Somit:
+
+- keine Bags!
+- kein DCA!
+
+
+Es wird ein Backtest-Modul mitgeliefert - siehe backtest_liesmich.txt.
+
+
+1. Voraussetzungen und Installation
+
+Die Computersprache Python muss in der 64-Bit-Version installiert sein.
+Unter Windows wird die Version 3.6.x unterstützt, unter Linux die beiden
+Versionen 3.5.x und 3.6.x.
+
+
+Exkurs:
+Unter Python kann man virtuelle Umgebungen schaffen. Das hat den Vorteil,
+dass sich installierte Python-Module anderer Programme nicht ins Gehege
+kommen. 
+Jede virtuelle Python-Umgebung fängt erst mal neu an. Jedes Modul muss
+in der virtuellen Umgebung erstmalig neu installiert werden.
+(Für die virtuelle Umgebung ist beim Installieren von Modulen kein sudo
+mehr notwendig!)
+
+
+Virtuelle Umgebung beim ersten Mal erzeugen:
+
+Ins gewünschte Verzeichnis gehen, in dem die Python-Dateien liegen
+
+Windows: python  -m venv .env
+Linux:   python3 -m venv .env
+
+Die virtuelle Python-Umgebung ist erzeugt (Unterverzeichnis env mit
+notwendigen Dateien wird im aktuellen Verzeichnis erzeugt).
+
+
+Virtuelle Umgebung starten, wenn man das Programm benutzen will
+
+Windows: .env\Scripts\activate.bat
+Linnux:  source .env/bin/activate
+
+Der angezeigte Prompt ändert sich; daran sieht man, dass das Environment
+aktiviert ist.
+Meist bekommt man eine  Fehlermeldung, das bezieht sich IMHO darauf,
+dass die Codepage von WIndows aus Sicht des Environments "falsch" ist.
+
+
+Notwendige Python-Module installieren
+
+ggfs pip updaten:
+Windows: pip  install --upgrade pip
+Linux:   pip3 install --upgrade pip
+
+Module installieren:
+
+Windows:
+pip install numpy
+pip install ccxt
+pip install python-telegram-bot
+
+Linux:
+pip3 install numpy
+pip3 install ccxt
+pip3 install python-telegram-bot
+
+
+Einstellungen in den Configs anpassen
+
+lrbot.secrets.js anpassen (wie von Auto_PT bekannt)
+
+lrbot06.json ist per Default auf Papertrading eingestellt.
+Damit mehr Kauf-Ereignisse  eintreten, sind die "Kaufansprüche"
+"niedrig" eingestellt:
+
+    "candle_length": "15m",
+    "check_every": "4h",
+    "trend_buy": "0.25",
+    "trend_min_r2": "0.75"
+
+Wenn man den Bot später zum Geldverdienen einsetzen will, dann
+sind andere Einstellungen angebracht.
+
+
+
+LRBot starten
+
+Windows: python  bot06.py
+Linux:   python3 bot06.py
+
+
+Der Bot meldet sich beim Hochfahren per Telegram, meldet alle
+<candle_length> Zeiten die Balance und den Stand an Coins, den man
+gerade hat. Jeder Buy und jeder Sell wird gemeldet.
+
+Man kann den Bot jederzeit mit STRG-C abbrechen und dann wieder
+starten, da der Bot anhand der Informationen von der Börse
+alle Laufzeitdaten wieder richtig erstellt.
+
+Allerdings - wenn der Bot gerade am Holen von Candles ist, bricht
+STRG-C nur den aktuellen URL-Aufruf ab, nicht den ganzen Bot! Der
+fährt dann mit dem Holen der nächsten Candle weiter etc.
+Da muss man leider warten, bis alle Candles geholt sind (siehe
+Log-File) und danach nochmal mit STRG-C abbrechen.
+

@@ -1,0 +1,258 @@
+Backtest zum LRBot06
+====================
+
+
+1. Grundsätzliches zu Backtests
+
+
+Sinnvolle Backtests sind schwieriger zu erstellen, als man gemeinhin denkt.
+
+Ein weit verbreiteter Irrtum ist, dass ein möglichst hohes Ergebnis beim
+Backtest der Garant für zukünftig erfolgreiches Traden wäre.
+
+Tatsächlich ist eher das Gegenteil der Fall. Die höchsten Ergebnisse bei
+Backtests sind normalerweise die, die am besten an genau den damaligen
+historischen Kursverlauf angepasst sind.
+
+Spezialisten kommen bekanntermaßen außerhalb ihres Spezialgebietes schlechter
+zurecht. Zum Traden brauchen wir aber Generalisten, die mit annähernd jeder
+Situation brauchbar zurecht kommen ...
+
+Deshalb gibt es Faustregeln und Beurteilungskriterien:
+
+Faustregel 1:
+
+Die allerbesten Endbalancen bei Backtests gleich wegschmeissen - das sind die
+Spezialisten mit dem Kurvenfitting, die nur für genau diesen historischen
+Kursverlauf brauchbar sind.
+
+Faustregel 2:
+
+Sucht euch einen genügend langen Testzeitraum aus. Idealerweise sollte der
+alles enthalten - Seitwärtsphasen, leichte Anstiege und leichte Abfälle,
+starke Anstiege und starke Abfälle.
+Das ist schwierig zu erfüllen, meist muss man Kompromisse eingehen.
+Je mehr Kompromisse man eingeht, desto weniger aussagekräftig ist der Test!
+
+Faustregel 3:
+
+Um dem Spezialistentum zu entgehen, muss man die brauchbar scheinenden
+Parametersätze unbedingt auf anderen, "unbenutzten" Zeiträumen testen!
+Viele - vor allem sehr überzeugende - Parameterkombinationen ergeben klägliche
+Resultate auf anderen Zeiträumen (siehe Faustregel 1).
+
+
+Faustregel 4:
+
+Fehler in den Kursdaten können ebenfalls zu tollen Ergebnissen führen. Wenn
+plötzliche Sprünge im Verlauf der Balance auftreten - egal, ob nach oben oder
+nach unten - sollte man misstrauisch sein und im Logfile die Trades im
+betreffenden Zeitraum genau überprüfen.
+Wenn ein gekaufter Coin plötzlich und extrem im Wert springt, dann enthalten
+normalerweise seine Kursdaten Fehler - oft sieht man das bereits durch bloßen
+Augenschein, wenn man seine Kursdatei in einen Editor lädt und zur
+entsprechenden Stelle scrollt. Wenn man die Kursdatei nicht reparieren kann,
+dann muss man sie löschen und auf den Coin verzichten.
+
+
+Beurteilungskriterien:
+
+Kennzahlen zum Trading geben eine genauere Vorstellung, wie sich die End-
+balance entwickelt hat - vertrauenserweckend oder mit zufälligen Sprüngen
+und Einbrüchen?
+
+Folgende Kennzahlen werden vom Backtest berechnet (wem sie wenig sagen,
+möge sie im Internet nachschlagen):
+
+ATH und MaxDrawdown:
+Wieviel von den erreichten Gewinnen geben die Strategie und ihre Einstellungen
+zwischendurch wieder ab? Je kleiner der maximale Drawdown ist, desto besser.
+
+Profitfaktor
+Das Verhältnis von Gewinnen zu Verlusten. Je höher, desto besser.
+
+Ulcer Index
+Je stärker Drawdowns sind oder je länger sie dauern, desto höher wird der
+Ulcer Index, d.h. niedrigere Werte sind besser.
+
+Kelly Criterion
+Gibt Hinweise, wie "verlässlich" die Gewinne kommen. Je höher, desto
+besser.
+
+
+2. Grundsätzliches zum LRBacktest
+
+
+Mit dem Backtest kann man überprüfen, wie sich die Einstellungen des LRBot
+über einen bestimmten Zeitraum geschlagen hätten.
+
+Dazu muss man dem Backtest das zu prüfende Parameterset in der Config-Datei
+'backtest06.json' vorgeben.
+
+Der Backtest liest diese Datei ein, ermittelt daraus, welche Coins für welchen
+Zeitraum er braucht und lädt fehlende Kursdaten automatisch herunter. 
+Anschliessend startet der eigentliche Backtest.
+
+Linux: python3 backtest.py
+Windows: python backtest.py
+
+Die Config-Datei 'backtest06.json' enthält die relevanten Werte aus der
+Config des Bots (lrbot06.json) und die zusätzlichen Felder (wie den
+Testzeitraum), die vom Backtest benötigt werden.
+
+
+3. Varianten beim Aufruf
+
+
+Man kann den Backtest beim Aufruf anweisen, eine andere Datei als Config zu
+verwenden. Damit kann man sich verschiedene Parametersets in Form mehrerer
+Configdateien vorbereiten und sie alle per Script/Batch in einem Rutsch
+nacheinander abarbeiten lassen.
+
+Linux: python3 backtest.py -c <configfile>
+Windows: python backtest.py -c <configfile>
+
+Man kann auch den Testzeitraum aus der Config beim Aufruf übersteuern. Das
+ist praktisch, wenn man eine Parameterkombination gezielt darauf überprüfen
+will, wie sie sich in unterschiedlichen Zeiträumen geschlagen hätte.
+
+Linux: python3 backtest.py [-t <startdate> <enddate> [<period>]]
+Windows: python backtest.py [-t <startdate> <enddate> [<period>]]
+
+Damit kann man zum einen mehrere Configfiles erzeugen und per Script/Batch 
+abarbeiten lassen. Zum anderen kann man so eine bestimmte Config bequem
+auf verschiedenen Zeiträumen testen.
+
+
+4. Die Ausgabe
+
+
+Der Test protokolliert seinen Verlauf auf dem Konsolenfenster. Mit:
+
+Linux: python3 backtest.py 2>&1 >test.log
+Windows: python backtest.py 2>&1 >test.log
+
+werden die Ausgaben in die Datei test.log geschrieben und können in
+Ruhe in einem Editor angesehen werden.
+
+Zusätzlich wird ein CSV-File ('lrbacktest06.0000.bt.csv') erstellt, das zu
+jeder Candle folgende Felder enthält:
+
+- time: Datum und Uhrzeit als Unix-Timestamp
+- date: Datum und Uhrzeit menschenlesbar
+- equity: das Gesamtvermögen zum jeweiligen Zeitpunkt
+- balance: der Anteil des Vermögens in USDT
+- coins: die Zahl der Coins, die aktuell im Besitz sind
+
+Mit den Diagrammfunktionen einer Tabellenkalkulation kann man die Spalten
+'date' bis 'coins' in ein aussagekräftiges und hilfreiches Diagramm
+verwandeln - ein Bild sagt mehr als 1000 Worte. ;-)
+
+
+5. Die wichtigsten Parameter
+
+Der Bot basiert auf der Idee, den Kursverlauf mit Trendgeraden anzunähern.
+
+Je zuverlässiger sich der Kurs eines Coins an eine Trendgerade hält, und je
+mehr diese Trendgerade ansteigt, desto eher wird der jeweilige Coin gekauft.
+
+Wenn diese Trendgerade nicht mehr steigt, sondern waagerecht verläuft oder
+sogar zu fallen beginnt, wird der jeweilige Coin wieder verkauft.
+
+Diese Methode funktioniert deswegen, weil sie das Kursrauschen ausmittelt und
+sich auf die großen Kursbewegungen konzentriert. Kleine Wackler werden ausge-
+sessen.
+
+Nachfolgend die wichtigsten Parameter, um diese Trendgeraden-Strategie an die
+Kurse und die eigenen Vorstellungen anzupassen.
+
+"candle_length": "1h"
+Legt fest, auf welcher Intervalle-Länge der Bot arbeiten soll. Nach meinen
+Tests bringen kürzere Intervalle keine Vorteile.
+Hinweis: Die eingestellte Candlelänge sollte auf der Exchange, auf der der
+LRBot später traden soll, natürlich auch verfügbar sein!
+ACHTUNG: Bei kürzeren Intervallen als 1h bekommt man schon bei moderaten
+Test-Zeiträumen Fehlermeldungen von der vom Backtest verwendeten Datenquelle
+cryptocompare.com!
+(Vernünftige Zeiträume mit Candles unter einer Stunde gibt es im Internet nicht
+kostenlos.)
+
+"check_every": "12h"
+Die Strategie wird im Normalfall nicht nach jeder neuen Candle aufgerufen,
+sondern seltener, um weniger aufs Rauschen und kleine Korrektur herein-
+zufallen. Nach meiner bisherigen Erfahrung ergeben hier die acht- bis zwölf-
+fachen Werte von "candle_length" die besten Ergebnisse. Bei kleineren Werten
+sinken die Ergebnisse merklich.
+
+"maxcoins": "3"
+Der Bot konzentriert sich auf die erfolgsversprechendsten Coins. Je niedriger
+man "maxcoins" wählt, desto höher theoretisch die Chancen, desto höher aber
+auch die Risiken, da die Kurse einen eigenen Willen haben ...
+Ein guter Mittelweg ist ein Wert zwischen 3 und 6.
+
+"len_min": "24"
+Soviele Candles lang soll eine Trendgerade mindestens sein, bevor der Bot den
+Coin in Betracht zieht. Kürzere Werte hier lassen den Bot schneller auf einen
+Coin aufspringen, die Gefahr ist allerdings auch viel größer, dass sich ein
+Kursanstieg als Bullenfalle entpuppt.
+Gute Erfahrungen habe ich mit dem Bereich von 24 bis 48 gemacht.
+
+"len_max": "240"
+Maximale Länge einer Trendgerade, die der Bot noch berücksichtigt. Je größer
+die maximale Länge, desto besser werden zwischenzeitliche Korrekturen
+ignoriert und ausgesessen. Desto höher aber auch der Rechenaufwand und die
+Testzeit.
+Gute Erfahrungen habe ich mit dem Bereich von 200 bis 400 gemacht.
+
+"len_short": "9"
+Da die Cryptomärkte sehr viel volatiler als die Aktienmärkte sind, auf denen
+die Methode des Regressionsgeraden-Tradings entwickelt wurde, braucht man
+Methoden, Kursänderungen nach unten schneller zu erkennen.
+Hiermit wird ein Schnelltest über die letzten x Candles durchgeführt. Wenn
+das Ergebnis mit hoher Signifikanz auf fallende Kurse verweist, übersteuert
+dieser Schnelltest die normale Trendgerade und führt ggfs. zu einem früheren
+Verkauf des Coins.
+Gute Erfahrungen habe ich mit dem Bereich von 8 bis 16 gemacht.
+
+"trend_sell": "0.00"
+Wenn die Trendgerade diesen Wert errreicht oder unterschreitet, wird der Coin
+verkauft.
+Gute Erfahrungen habe ich mit Werten um die Null herum gemacht.
+
+"trend_buy": "0.35"
+Wenn die Trendgerade diesen Wert errreicht oder überschreitet, wird der Coin
+zum Kaufen in Betracht gezogen.
+Gute Erfahrungen habe ich mit Werten von 0.30 bis 0.40 gemacht.
+
+"trend_min_r2": "0.75"
+Dieser Wert kontrolliert, wie zuverlässig und berechenbar sich ein Coin in
+den letzten Candles entwickelt haben muss. Je wilder ein Coin umherspringt,
+desto niedriger sein Wert hierbei und desto größer das Risiko beim Kaufen und
+Verkaufen.
+Gute Erfahrungen habe ich mit Werten von 0.70 bis 0.90 gemacht.
+
+"difftrend": "9.0"
+Hiermit lässt sich eine Optimierung zu- oder abschalten. Wenn der BTC
+stärker steigt als der gekaufte Coin, ist es unter Umständen sinnvoll,
+vom Coin auf den BTC umzusatteln. Nach meinen Erfahrungen ist es ratsam,
+nicht zu leichtfertig umzusatteln, sondern ein merklich besseres BTC-Steigen
+zu verlangen.
+Gute Erfahrungen habe ich mit dem Bereich von 0.1 bis 0.3 gemacht.
+Der voreingestellte Wert von 9 schaltet das Umsatteln ab.
+
+
+Die nächsten beiden Werte realisieren einen Drop-Schutz ähnlich dem Drop-
+Detector bei Auto_PT:
+
+"sl_candlecount": "4"
+"sl_loss": "-10%"
+
+Der Dropschutz wird im Gegensatz zur Trendgeraden-Trading bei jeder neuen
+Candle aufgerufen.
+Hier: Wenn der Kurs in den letzten 4 Candles um 10% oder mehr gefallen ist,
+verkaufe.
+Wie bei Auto_PT gilt auch hier: Je mehr Drops man entdecken will, desto größer
+muss der Wert von candlecount sein.
+Kleinere Werte von candlecount entdecken nur ganz schnelle Drops und übersehen
+etwas langsamere. Größere Werte entdecken schnelle Drops und zusätzlich auch
+langsamere!
